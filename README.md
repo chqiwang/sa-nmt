@@ -4,8 +4,13 @@ The is the official implementation of the paper: **Semi-Autoregressive Neural Ma
 ## Contact
 Email: <chqiwang@126.com>
 
-## Prepare Data
-TBD
+## Prepare
+Clone this project
+
+	git clone https://github.com/chqiwang/sa-nmt.git
+	cd sa-nmt
+
+Download **data.zip** from [google drive](<https://drive.google.com/open?id=1RWvAZfttwUQFGY76ItQ9Mmplq-RTWRm7>) then decompress it. Make sure the **data** folder is a subfolder of **sa-nmt**.
 
 ## Usage
 
@@ -44,3 +49,4 @@ Evaluate the model
 ## Notes
 * Each steps will takes a long time.
 * By default, we use 8 gpu devices when train and predict. If you have less then 8 gpus, you should modify the yaml config files.
+* The whole process is not tested, raise an issue or email me if you have problem.
