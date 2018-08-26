@@ -1,0 +1,63 @@
+---
+model: Transformer
+src_vocab: 'data/ende/vocab.bpe.32000'
+dst_vocab: 'data/ende/vocab.bpe.32000'
+src_vocab_size: 37008
+dst_vocab_size: 37008
+hidden_units: 512
+ff_hidden_units: 1024
+scale_embedding: True
+tie_embeddings: True
+tie_embedding_and_softmax: True
+attention_dropout_rate: 0.0
+residual_dropout_rate: 0.1
+num_blocks: 6
+num_heads: 8
+ff_activation: 'relu'
+model_dir: 'model-transformer'
+train:
+  num_gpus: 8
+  src_path: 'data/ende/train.tok.clean.bpe.32000.en'
+  dst_path: 'data/ende/train.tok.clean.bpe.32000.de'
+  tokens_per_batch: 30000
+  max_length: 150
+  num_epochs: 100
+  num_steps: 100000
+  save_freq: 1000
+  show_freq: 1
+  summary_freq: 100
+  grads_clip: 0
+  optimizer: 'adam_decay'
+  learning_rate: 1
+  warmup_steps: 4000
+  label_smoothing: 0.1
+  toleration:  # Empty value denotes that we save model anyway
+  eval_on_dev: True
+dev:
+  batch_size: 256
+  src_path: 'data/ende/newstest2013.tok.bpe.32000.en'
+  ref_path: 'data/ende/newstest2013.tok.de'
+  output_path: 'model-transformer/newstest2013.output'
+  cmd: >
+    perl -ple 's{{(\S)-(\S)}}{{$1 ##AT##-##AT## $2}}g' < {ref} > /tmp/ende.ref &&
+    perl -ple 's{{(\S)-(\S)}}{{$1 ##AT##-##AT## $2}}g' < {output} > /tmp/ende.output &&
+    perl multi-bleu.perl /tmp/ende.ref < /tmp/ende.output 2>/dev/null | awk '{{print($3)}}' | awk -F, '{{print $1}}'
+test:
+  batch_size: 256
+  max_target_length: 200
+  lp_alpha: 0.6
+  beam_size: 4
+  num_gpus: 8
+  set_wmt14:
+    src_path: 'data/ende/newstest2014.tok.bpe.32000.en'
+    dst_path: 'data/ende/newstest2014.tok.bpe.32000.de'
+    ref_path: 'data/ende/newstest2014.tok.de'
+    output_path: 'model-transformer/newstest2014.output'
+    cmd: >
+      perl -ple 's{{(\S)-(\S)}}{{$1 ##AT##-##AT## $2}}g' < {ref} > /tmp/ende.ref &&
+      perl -ple 's{{(\S)-(\S)}}{{$1 ##AT##-##AT## $2}}g' < {output} > /tmp/ende.output &&
+      perl multi-bleu.perl /tmp/ende.ref < /tmp/ende.output 2>/dev/null | awk '{{print($3)}}' | awk -F, '{{print $1}}'
+  set_train:
+   src_path: 'data/ende/train.tok.clean.bpe.32000.en'
+   output_path: 'model-transformer/train.bpe.de'
+   keep_bpe_flag: True
