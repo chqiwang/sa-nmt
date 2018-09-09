@@ -28,7 +28,7 @@ Then average the last five checkpoints
 	python evaluate.py -c configs/transformer.yaml
 
 ### Step 3: Train and evaluate the SAT
-(Plsease replace [K] in the following commands with an integer larger than one)
+(Plsease replace [K] in the following commands with 2, 4 or 6)
 
 Copy the base model
 
@@ -47,6 +47,6 @@ Evaluate the model
 	python evaluate.py -c configs/sat-[K].yaml
 
 ## Notes
-* Each steps will takes a long time.
-* By default, we use 8 gpu devices when train and predict. If you have less then 8 gpus, you should modify the yaml config files.
-* The whole process is not tested, raise an issue or email me if you have problem.
+* Each steps will takes a long time (maybe one day, depend on your gpu device).
+* By default, we use 8 gpu devices when train and predict. If you have less then 8 gpus, you should modify the yaml config files (num_gpus, batch_size and tokens_per_batch).
+* Raise an issue or email me if you have problem.
